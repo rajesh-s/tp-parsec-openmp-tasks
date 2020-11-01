@@ -1,0 +1,19 @@
+/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p bodytrack -c gcc-task_omp -i native -n 2  > ~/body2
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p bodytrack -c gcc-task_omp -i native -n 1  > ~/body1
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p bodytrack -c gcc-task_omp -i native -n 4  > ~/body4
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p bodytrack -c gcc-task_omp -i native -n 8  > ~/body8
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p bodytrack -c gcc-task_omp -i native -n 16 > ~/body16
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p bodytrack -c gcc-task_omp -i native -n 32 > ~/body32
+/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp -i native -n 2  > ~/blackschole2
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp -i native -n 1  > ~/blackschole1
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp -i native -n 4  > ~/blackschole4
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp -i native -n 8  > ~/blackschole8
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp -i native -n 16 > ~/blackschole16
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp -i native -n 32 > ~/blackschole32
+/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp -i native -n 2  > ~/freq2
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp -i native -n 1  > ~/freq1
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp -i native -n 4  > ~/freq4
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp -i native -n 8  > ~/freq8
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp -i native -n 16 > ~/freq16
+#/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp -i native -n 32 > ~/freq32
+
