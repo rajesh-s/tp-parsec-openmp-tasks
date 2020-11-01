@@ -1,0 +1,38 @@
+[PARSEC] Packages to build:  parsec.blackscholes
+
+[PARSEC] [========== Building package parsec.blackscholes [1] ==========]
+[PARSEC] [---------- Analyzing package parsec.blackscholes ----------]
+[PARSEC] Package parsec.blackscholes already exists, proceeding.
+[PARSEC]
+[PARSEC] BIBLIOGRAPHY
+[PARSEC]
+[PARSEC] [1] Bienia. Benchmarking Modern Multiprocessors. Ph.D. Thesis, 2011.
+[PARSEC]
+[PARSEC] Done.
+[PARSEC] Benchmarks to run:  parsec.blackscholes
+
+[PARSEC] [========== Running benchmark parsec.blackscholes [1] ==========]
+[PARSEC] Deleting old run directory.
+[PARSEC] Setting up run directory.
+[PARSEC] Unpacking benchmark input 'native'.
+in_10M.txt
+[PARSEC] Source global build configuration file '/home/rajesh/tp-parsec/tp-parsec/config/gcc.bldconf'.
+[PARSEC] Source global build configuration file '/home/rajesh/tp-parsec/tp-parsec/config/task.bldconf'.
+[PARSEC] Source global build configuration file '/home/rajesh/tp-parsec/tp-parsec/config/task_omp.bldconf'.
+[PARSEC] Run directory: /home/rajesh/tp-parsec/tp-parsec/pkgs/apps/blackscholes/run/amd64-linux.gcc-task_omp
+[PARSEC] Run command: 'OMP_NUM_THREADS=32 /usr/bin/time -p /home/rajesh/tp-parsec/tp-parsec/pkgs/apps/blackscholes/inst/amd64-linux.gcc-task_omp/bin/blackscholes 32 in_10M.txt prices.txt':
+[PARSEC] [---------- Beginning of output ----------]
+PARSEC Benchmark Suite Version 3.0-beta-20150206
+Num of Options: 10000000
+Num of Runs: 100
+Size of data: 400000000
+real 35.02
+user 168.11
+sys 0.76
+[PARSEC] [----------    End of output    ----------]
+[PARSEC]
+[PARSEC] BIBLIOGRAPHY
+[PARSEC]
+[PARSEC] [1] Bienia. Benchmarking Modern Multiprocessors. Ph.D. Thesis, 2011.
+[PARSEC]
+[PARSEC] Done.
