@@ -4,6 +4,7 @@
 
 - [1. Progress so far](#1-progress-so-far)
 - [2. Profiling OpenMP tasks on tp-parsec benchmark suite](#2-profiling-openmp-tasks-on-tp-parsec-benchmark-suite)
+  - [DAGViz](#dagviz)
 - [3. Results](#3-results)
   - [3.1. VTune](#31-vtune)
 - [4. Appendix](#4-appendix)
@@ -14,7 +15,7 @@
 
 ## 1. Progress so far
 
-- Setup tp-parsec suite, understand it's basics
+- Setup [tp-parsec](https://github.com/massivethreads/tp-parsec) suite, understand it's basics (contributed to documentation updates that can save time to the original repository[1](https://github.com/massivethreads/tp-parsec/pull/2) [2](https://github.com/massivethreads/tp-parsec/pull/3) [3](https://github.com/massivethreads/dagviz/pull/2))
 - Be able to run openmp-task workloads in Intel vtune for performance analyses
 - DAG visualization to see the DAG recorder outputs integrated in TP-PARSEC
 - Understand how OpenMP tasks work
@@ -44,6 +45,7 @@
 
 - Build blackscholes workload with DAG recorder
 ```/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p blackscholes -c gcc-task_omp-dr -i simlarge -n 8 # With DAG recorder```
+  - Install dagviz using [this](https://github.com/massivethreads/dagviz) that can be used to open the *.dag in tp-parsec output directory (ex: pkgs/apps/freqmine/run/amd64-linux.gcc-task_omp-dr)
 
 - For ICC compiler, be sure to update tp-parsec/config/icc.bldconf with the install paths
 
@@ -52,6 +54,22 @@
   - HPCToolkit
   - Score-P
   - Omp-Whip
+
+### DAGViz
+
+Example with
+```bash
+/home/rajesh/tp-parsec/tp-parsec/bin/parsecmgmt2 -a build run -p freqmine -c gcc-task_omp-dr -i simlarge -n 8
+```
+
+**Note**: native inputs can take extremely long and crash with DAGrecorder enabled on DAGViz. Try using the sim inputs
+
+![1](images/2020-11-01-17-20-39.png)
+![2](images/2020-11-01-17-21-06.png)
+
+Parallelism profile: GUI is better on PyQT. Can use vtune for this!
+
+![3](images/2020-11-01-17-24-48.png)
 
 ## 3. Results
 
