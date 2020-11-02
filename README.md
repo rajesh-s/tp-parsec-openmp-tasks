@@ -16,14 +16,14 @@
 
 ## 1. Progress so far
 
-[x] Setup [tp-parsec](https://github.com/massivethreads/tp-parsec) suite, understand it's basics (contributed to documentation updates that can save time to the original repository[1](https://github.com/massivethreads/tp-parsec/pull/2) [2](https://github.com/massivethreads/tp-parsec/pull/3) [3](https://github.com/massivethreads/dagviz/pull/2))
-[x] Be able to run openmp-task workloads in Intel vtune for performance analyses
-[x] DAG visualization to see the DAG recorder outputs integrated in TP-PARSEC
-[x] Understood how OpenMP tasks work, replacements made by tp-parsec in source code
-[] HPC Tool kit, Score-P built but flow to be tried out
-[] Next steps: Understand the event scheduling of each task based on grain size
-[] Understand correlation of runtime vs parallelization with tasks vs threads (using the original PARSEC)
-[] Learn to trace source code (as opposed to assembly) in Vtune to help visualize the structure of task bifurcations on different cores/threads
+- [x] Setup [tp-parsec](https://github.com/massivethreads/tp-parsec) suite, understand basics (contributed to documentation updates that can save time to the original repository[1](https://github.com/massivethreads/tp-parsec/pull/2) [2](https://github.com/massivethreads/tp-parsec/pull/3) [3](https://github.com/massivethreads/dagviz/pull/2))
+- [x] Be able to run openmp-task workloads in Intel vtune for performance analyses
+- [x] DAG visualization to see the DAG recorder outputs integrated in TP-PARSEC
+- [x] Understood how OpenMP tasks work, replacements made by tp-parsec in source code
+- [ ] HPC Tool kit, Score-P built but flow to be tried out
+- [ ] Next steps: Understand the event scheduling of each task based on grain size
+- [ ] Understand correlation of runtime vs parallelization with tasks vs threads (using the original PARSEC)
+- [ ] Learn to trace source code (as opposed to assembly) in Vtune to help visualize the structure of task bifurcations on different cores/threads
 
 - Papers/Documentation read
   - DAGViz: A DAG Visualization Tool for Analyzing Task-Parallel Program Traces
