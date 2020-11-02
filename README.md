@@ -3,23 +3,28 @@
 # Profiling OpenMP tasks on TP-PARSEC benchmark suite
 
 - [1. Progress so far](#1-progress-so-far)
-- [2. Profiling OpenMP tasks on tp-parsec benchmark suite](#2-profiling-openmp-tasks-on-tp-parsec-benchmark-suite)
-  - [DAGViz](#dagviz)
-- [3. Results](#3-results)
-  - [3.1. VTune](#31-vtune)
-- [4. Appendix](#4-appendix)
-  - [4.1. Installing vTune](#41-installing-vtune)
-  - [4.2. HPC Toolkit](#42-hpc-toolkit)
-  - [4.3. Installing Score-P on Ubuntu 20.04.1 LTS](#43-installing-score-p-on-ubuntu-20041-lts)
-  - [4.4. Omp-Whip](#44-omp-whip)
+- [2. Background concepts](#2-background-concepts)
+- [3. Profiling OpenMP tasks on tp-parsec benchmark suite](#3-profiling-openmp-tasks-on-tp-parsec-benchmark-suite)
+  - [3.1. DAGViz](#31-dagviz)
+- [4. Results](#4-results)
+  - [4.1. VTune](#41-vtune)
+- [5. Appendix](#5-appendix)
+  - [5.1. Installing vTune](#51-installing-vtune)
+  - [5.2. HPC Toolkit](#52-hpc-toolkit)
+  - [5.3. Installing Score-P on Ubuntu 20.04.1 LTS](#53-installing-score-p-on-ubuntu-20041-lts)
+  - [5.4. Omp-Whip](#54-omp-whip)
 
 ## 1. Progress so far
 
-- Setup [tp-parsec](https://github.com/massivethreads/tp-parsec) suite, understand it's basics (contributed to documentation updates that can save time to the original repository[1](https://github.com/massivethreads/tp-parsec/pull/2) [2](https://github.com/massivethreads/tp-parsec/pull/3) [3](https://github.com/massivethreads/dagviz/pull/2))
-- Be able to run openmp-task workloads in Intel vtune for performance analyses
-- DAG visualization to see the DAG recorder outputs integrated in TP-PARSEC
-- Understand how OpenMP tasks work
-- HPC Tool kit, Score-P built but flow to be tried out
+[x] Setup [tp-parsec](https://github.com/massivethreads/tp-parsec) suite, understand it's basics (contributed to documentation updates that can save time to the original repository[1](https://github.com/massivethreads/tp-parsec/pull/2) [2](https://github.com/massivethreads/tp-parsec/pull/3) [3](https://github.com/massivethreads/dagviz/pull/2))
+[x] Be able to run openmp-task workloads in Intel vtune for performance analyses
+[x] DAG visualization to see the DAG recorder outputs integrated in TP-PARSEC
+[x] Understood how OpenMP tasks work, replacements made by tp-parsec in source code
+[] HPC Tool kit, Score-P built but flow to be tried out
+[] Next steps: Understand the event scheduling of each task based on grain size
+[] Understand correlation of runtime vs parallelization with tasks vs threads (using the original PARSEC)
+[] Learn to trace source code (as opposed to assembly) in Vtune to help visualize the structure of task bifurcations on different cores/threads
+
 - Papers/Documentation read
   - DAGViz: A DAG Visualization Tool for Analyzing Task-Parallel Program Traces
   - https://parsec.cs.princeton.edu/doc/man/man7/parsec.7.html
@@ -30,11 +35,43 @@
   - https://press3.mcs.anl.gov//atpesc/files/2017/08/ATPESC_2017_Track-5_1_7-31_345pm_Mellor-Crummey-HPCToolkit.pdf
   - https://link.springer.com/chapter/10.1007/978-3-642-02303-3_11
   - [GCC vs ICC](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.679.1280&rep=rep1&type=pdf#:~:text=GCC%20stands%20for%20%E2%80%9CGNU%20Compiler,and%20Intel%2Dbased%20Android%20devices.)
+  - https://www.openmp.org//wp-content/uploads/sc13.tasking.ruud.pdf
 
 - Workloads (blackscholes,bodytrack,freqmine) can be parallelized by OpenMP from original PARSEC (More info [here](http://wiki.cs.princeton.edu/index.php/PARSEC))
 - TP-PARSEC parallelizes PARSEC workloads into multiple task programming models which use task parallelism (i.e., lightweight user-level threads) instead of the restrictive parallel for loops like OpenMP's parallel for
 
-## 2. Profiling OpenMP tasks on tp-parsec benchmark suite
+## 2. Background concepts
+
+- OpenMP is an API for writing **Multithreaded** Applications
+  - A set of compiler directives (for C/C++) and library routines for parallel application programmers
+  - omp_set_num_threads(4) - Runtime function to set number of threads
+  - omp_get_thread_num() gets thread ID's (something like CUDA)
+  - #pragma omp parallel is used to mark a parallel region of code
+    - Each thread executes a copy of the code within the structured block on the same data (SPMD)
+  - Synchronization to prevent race condition when sharing variables (for thread communication)
+  - ![pfor](images/2020-11-02-15-56-22.png)
+  - [Resource](https://www.openmp.org/wp-content/uploads/omp-hands-on-SC08.pdf)
+
+- Task parallel programming model, task is a logical unit of concurrency which can be arbitrarily created at any point and dynamically scheduled on available cores. PFor can be expressed as tasks because tasks can be created anywhere. Dynamic/automatic load balancing simplifies scheduling.
+- tp-parsec replaces "parallel for" with "pfor" (task version)
+  - pfor divides the for loop iterations recursively into 2 halves and create two tasks executing them at each recursive level. create_task and wait_tasks. The grain size value indicates at what point the recursive division should stop and the leaf computation executed
+  - Blackscholes
+    - Nested loop of 100 x 10^7
+    - Fine grained tasks with grain size 10k
+  - Freqmine
+    - 7 parallel for loops in PARSEC
+      - Step 1: 1 for loop
+      - Step 2: 4 for loops
+      - Step 3: 2 for loops
+    - In task version, pfor primitive is added in place of parallel for. Grain size is set to 1 for all 7 pfor.
+
+Execution based on scheduling
+![Tasks](images/2020-11-02-16-55-05.png)
+
+Execution based on fixed threads (fork/join)
+![Threads](images/2020-11-02-16-58-18.png)
+
+## 3. Profiling OpenMP tasks on tp-parsec benchmark suite
 
 - All possible input options for a specific workload can be retrieved using: ```tp-parsec/pkgs/apps/blackscholes/inputs```
   - Inputs available: native, simlarge, simsmall, simmedium, simdev. Native is to be used on real machines
@@ -55,7 +92,7 @@
   - Score-P
   - Omp-Whip
 
-### DAGViz
+### 3.1. DAGViz
 
 Example with
 ```bash
@@ -71,7 +108,7 @@ Parallelism profile: GUI is better on PyQT. Can use vtune for this!
 
 ![3](images/2020-11-01-17-24-48.png)
 
-## 3. Results
+## 4. Results
 
 - The benchmarks were run on the following configuration:
 
@@ -91,16 +128,16 @@ Parallelism profile: GUI is better on PyQT. Can use vtune for this!
 - tp-parsec logs are [here](./tp-parsec/logs)
 - Metrics capture in the xls on the repository
 
-### 3.1. VTune
+### 4.1. VTune
 
 ![Vtune](images/2020-11-01-15-49-09.png)
 
 Spawned threads
 ![1](images/2020-11-01-15-51-35.png)
 
-## 4. Appendix
+## 5. Appendix
 
-### 4.1. Installing vTune
+### 5.1. Installing vTune
 
 ```bash
 sudo apt-get install libgtk-3-0 libasound2 libxss1 libnss3
@@ -113,7 +150,7 @@ echo "0"|sudo tee /proc/sys/kernel/yama/ptrace_scope
 
 - https://www.cs.utexas.edu/~pingali/CS377P/2019sp/lectures/Intel_Tools-UT_Austin.pdf
 
-### 4.2. HPC Toolkit
+### 5.2. HPC Toolkit
 
 - [Install](http://hpctoolkit.org/software.html)
 
@@ -141,7 +178,7 @@ cd spack/bin/
 ~/tools/hpctoolkit/spack/opt/spack/linux-ubuntu20.04-haswell/gcc-9.3.0/hpcviewer-2020.07-5jhzze7aivxmalacdujvlgpqz662r5yz/bin/hpcviewer hpctoolkit-basename-database
 ```
 
-### 4.3. Installing Score-P on Ubuntu 20.04.1 LTS
+### 5.3. Installing Score-P on Ubuntu 20.04.1 LTS
 
 - [Install, docs](https://www.vi-hps.org/projects/score-p/)
 
@@ -154,6 +191,6 @@ make
 make install
 ```
 
-### 4.4. Omp-Whip
+### 5.4. Omp-Whip
 
 - [This](https://github.com/rutgers-apl/omp-whip.git) did not work due to memory issues during build. Not sure if it's an issue with the my OS
